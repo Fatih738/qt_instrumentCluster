@@ -2,3 +2,11 @@ ctr.arc(outerRadius, outerRadius, outerRadius = ctr.lineWidth /2,
         degree2Rad(valueToAngle(70) - 50), degree2Rad(valueToAngle(60) - 50))
         
 ctr.stroke();
+
+    tickmark: Rectangle {
+        visible:styleData.value % 100 == 0
+        implicitWidth: outerRadius * 0.02
+        antialiasing: true
+        implicitHeight: outerRadius * 0.06
+        color: "#e5e5e5"
+    }
