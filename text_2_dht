@@ -100,3 +100,75 @@ Window {
     }*/
 
 }
+-------------------------
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+
+
+#include <QObject>
+#include <QtQuick/QQuickView>
+#include <QtQuick/QQuickItem>
+#include <QQuickItem>
+#include <QQuickView>
+
+#include <QTimer>
+
+#include "wiringPi.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <wiringPiSPI.h>
+
+QObject *item = NULL;
+unsigned char gaugeVAL=50;
+QObject *itemH = NULL;
+int value = 10;
+unsigned char buffer[100];
+unsigned char temp = 0;
+unsigned char SOC = 0;
+
+static const int CHANNEL = 1;
+
+void read_SPI(){
+
+    wiringPiSPIDataRW(CHANNEL, buffer, 2);
+    temp = buffer[0];
+    SOC = buffer[1];
+    item->setProperty("text",temp);
+    itemH->setProperty("text",SOC);
+    //item->setProperty("text",QString("%1").arg(temp));
+    //itemH->setProperty("text",QString("%1").arg(SOC));
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    wiringPiSetup();
+    setuid(getuid());
+    wiringPiSPISetup(CHANNEL, 4000000);
+    QGuiApplication app(argc, argv);
+
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    if (engine.rootObjects().isEmpty())
+        return -1;
+
+  // QObject *itemC = NULL;
+  // itemC = engine.rootObjects().at(0)->findChild<QQuickItem*>("temp1");
+   //itemC->setProperty("text",QString::fromUtf8("°C"));
+
+
+   item = engine.rootObjects().at(0)->findChild<QQuickItem*>("temp");
+   itemH = engine.rootObjects().at(0)->findChild<QQuickItem*>("hum");
+
+
+   QTimer timer;
+   QObject::connect(&timer,&QTimer::timeout,read_SPI);
+   timer.start(100);
+
+
+    return app.exec();
+}
