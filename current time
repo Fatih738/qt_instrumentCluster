@@ -1,0 +1,27 @@
+QObject *itemCurrentTime = NULL; 
+
+ 
+ itemCurrentTime = engine.rootObjects().at(0)->findChild<QQuickItem*>("CurrentTime");
+
+// update
+if (itemCurrentTime)
+            itemCurrentTime->setProperty("text",QString("%1").arg(time_text));
+            
+            
+qml file
+    Text {
+        id: curTime
+        objectName: "CurrentTime"
+        x: 587
+        y: 385
+        width: 128
+        height: 75
+        color: "#fb6300"
+        renderType: Text.NativeRendering
+        font.pixelSize: 60
+    }
+    
+  change color
+  color: "white"
+  x: 620
+  y: 400
