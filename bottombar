@@ -8,3 +8,8 @@
         color: "black"
         height: parent.height / 12
     }
+
+//burayı da main.qml ye eklemeli
+    BottomBar{
+        id: bottomBar
+    }
